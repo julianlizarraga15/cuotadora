@@ -1,36 +1,56 @@
 #:import get_dato_inflacion datoInflacion.get_dato_inflacion
+#:import Factory kivy.factory.Factory
+#:import FadeTransition kivy.uix.screenmanager.FadeTransition
 
 <MyGridLayout>
 
     input_monto:input_monto
     input_n_cuotas:input_n_cuotas
     input_inflacion_anual_estimada:input_inflacion_anual_estimada
+
+    background_color: 5/255.0, 0/255.0, 100/255.0, 1
+    canvas.before:
+        Color:
+            rgba: self.background_color
+        Rectangle:
+            pos: self.pos
+            size: self.size
     
     GridLayout:
         id: firstGridLayout
         cols: 1
         size: root.width, root.height
+
+        padding: 50
+        spacing: 10
         
         Label:
             text: 'CUOTADORA'
             font_size: 32
-            background_color: 28/255.0, 28/255.0, 28/255.0, 1
+            background_color: (48/255.0, 48/255.0, 48/255.0, 1)
             canvas.before:
                 Color:
                     rgba: self.background_color
-                Rectangle:
+                RoundedRectangle:
                     pos: self.pos
                     size: self.size
+                    radius: [10]
+            Image:
+                source: 'images/calculadora.png'
+                size: 60,60
+                y: self.parent.y + 18
+                x: self.parent.x + 460
 
         Label:
             text:'¡Enteráte de cuánto te ahorrás al comprar en cuotas sin interés!'
-            background_color: 28/255.0, 28/255.0, 28/255.0, 1
+            background_color: (48/255.0, 48/255.0, 48/255.0, 1)
             canvas.before:
                 Color:
                     rgba: self.background_color
-                Rectangle:
+                RoundedRectangle:
                     pos: self.pos
                     size: self.size
+                    radius: [10]
 
         GridLayout:
             id: secondGridLayout
@@ -44,6 +64,7 @@
                 multiline: False
                 input_filter: 'float'
                 write_tab: False
+                halign: "center"
 
             Label:
                 text: 'Número de cuotas:'
@@ -52,6 +73,7 @@
                 multiline: False
                 input_filter: 'float'
                 write_tab: False
+                halign: "center"
 
             Label:
                 text: 'Inflación anual estimada:'
@@ -60,35 +82,81 @@
                 hint_text: str(get_dato_inflacion())
                 multiline: False
                 write_tab: False
+                halign: "center"
+                
 
-        Button:
-            text: 'Calcular'
-            on_press: root.calcular()
-            size_hint_y: None
-            height: 50
-            size_hint_x: None
-            width: 200
-            background_normal: ''
-            background_color: 28/255.0, 28/255.0, 28/255.0, 1
+        AnchorLayout:
+            anchor_x: 'center'
+            
+            RoundedButton:
+                text: 'Calcular'
+                on_press: root.calcular()
+                size_hint_x: None
+                width: 300       
 
         GridLayout:
             id: secondGridLayout
             cols: 2
             size: root.width, root.height
+            spacing: 10
 
             Label:
-                text: 'Valor presente neto'
+                text: 'Valor presente neto:'
             Label:
                 id: label_npv
                 text: ''
+                color: (0, 0, 0, 1)
+                canvas.before:
+                    Color:
+                        rgba: 255/255.0, 255/255.0, 255/255.0, 1
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
 
             Label:
-                text: 'El descuento es del'
+                text: 'El descuento es del:'
             Label:
                 id: label_descuento
                 text: ''
+                color: (0, 0, 0, 1)
+                canvas.before:
+                    Color:
+                        rgba: 255/255.0, 255/255.0, 255/255.0, 1
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+
+
             Label:
-                text: 'Te ahorrás'
+                text: 'Te ahorrás:'
             Label:
                 id: label_ahorro
-                text: ''            
+                text: ''
+                color: (0, 0, 0, 1)
+                canvas.before:
+                    Color:
+                        rgba: 255/255.0, 255/255.0, 255/255.0, 1
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size 
+
+<RoundedButton@Button>
+    background_color: (0, 0, 0, 0)
+    background_normal: '' 
+    canvas.before:
+        Color:
+            rgba: (48/255.0, 48/255.0, 48/255.0, 1)
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [30]   
+
+<ErrorPopup@Popup>
+    id: error_popup
+    auto_dismiss: False
+    size_hint: 0.6, 0.2
+    title: 'Error al ingresar datos'
+    title_align: 'center'
+    Button: 
+        text: 'Cerrar'
+        on_release: root.dismiss() 
